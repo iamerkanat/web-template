@@ -101,6 +101,24 @@ const onDisputeOrder = (
     });
 };
 
+// Submit report and close the review modal
+const onReportOrder = (
+  currentTransactionId,
+  transitionName,
+  onTransition,
+  setReportSubmitted
+) => values => {
+  const { reportReason } = values;
+  const params = reportReason ? { protectedData: { reportReason } } : {};
+  onTransition(currentTransactionId, transitionName, params)
+    .then(r => {
+      return setReportSubmitted(true);
+    })
+    .catch(e => {
+      // Do nothing.
+    });
+};
+
 // Submit change request, make transition, and send message
 const onChangeRequest = (
   currentTransactionId,
@@ -265,6 +283,7 @@ const getDataValidationResult = (transaction, process) => {
 export const TransactionPageComponent = props => {
   const [isDisputeModalOpen, setDisputeModalOpen] = useState(false);
   const [disputeSubmitted, setDisputeSubmitted] = useState(false);
+  const [reportSubmitted, setReportSubmitted] = useState(false);
   const [isReportModalOpen, setReportModalOpen] = useState(false);
   const [isReviewModalOpen, setReviewModalOpen] = useState(false);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
@@ -693,6 +712,7 @@ export const TransactionPageComponent = props => {
       transitions={txTransitions}
       processName={processName}
       protectedData={transaction?.attributes?.protectedData}
+      marketplaceName={config.marketplaceName}
       messages={messages}
       savePaymentMethodFailed={savePaymentMethodFailed}
       fetchMessagesError={fetchMessagesError}
@@ -867,6 +887,15 @@ export const TransactionPageComponent = props => {
             focusElementId={`${actionButtonContainer}_reportOrderButton`}
             onCloseModal={() => setReportModalOpen(false)}
             onManageDisableScrolling={onManageDisableScrolling}
+            onReportOrder={onReportOrder(
+              transaction?.id,
+              process.transitions.REPORT,
+              onTransition,
+              setReportSubmitted
+            )}
+            reportSubmitted={reportSubmitted}
+            reportInProgress={transitionInProgress === process.transitions.REPORT}
+            reportError={transitionError}
           />
         ) : null}
         {process?.transitions?.DISPUTE ? (
