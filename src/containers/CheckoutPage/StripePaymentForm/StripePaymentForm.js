@@ -12,6 +12,7 @@ import { FormattedMessage, injectIntl } from '../../../util/reactIntl';
 import { propTypes } from '../../../util/types';
 import { ensurePaymentMethodCard } from '../../../util/data';
 import { getPropsForCustomTransactionFieldInputs } from '../../../util/fieldHelpers';
+import { BOOKING_PROCESS_NAME, DOWNLOAD_PROCESS_NAME } from '../../../transactions/transaction';
 
 import {
   Heading,
@@ -290,7 +291,7 @@ const initialState = {
  * @param {Object} props.listingLocation - The listing location
  * @param {Object} props.listingLocation.building - The building
  * @param {Object} props.listingLocation.address - The address
- * @param {boolean} props.isBooking - Whether the booking is in progress
+ * @param {string} props.processName - The transaction process name
  * @param {boolean} props.isFuzzyLocation - Whether the location is fuzzy
  * @param {Object} props.intl - The intl object
  */
@@ -477,8 +478,7 @@ class StripePaymentForm extends Component {
       locale,
       stripePublishableKey,
       marketplaceName,
-      isBooking,
-      isDownload,
+      processName,
       isFuzzyLocation,
       transactionFieldConfigs = [],
       showTransactionFields,
@@ -571,6 +571,8 @@ class StripePaymentForm extends Component {
       const checked = event.target.checked;
       this.updateBillingDetailsToMatchShippingAddress(checked);
     };
+    const isBooking = processName === BOOKING_PROCESS_NAME;
+    const isDownload = processName === DOWNLOAD_PROCESS_NAME;
     const isBookingYesNo = isBooking ? 'yes' : 'no';
 
     const showAdditionalInfoHeading =
