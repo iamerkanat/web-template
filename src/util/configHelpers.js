@@ -1116,6 +1116,10 @@ export const allowProviderUpdateOffer = listingTypeConfig => {
   return listingTypeConfig?.negotiationOptions?.providerUpdateOffer === true;
 };
 
+export const requireListingFiles = listingTypeConfig => {
+  return listingTypeConfig?.messagingOptions?.fileAttachments === true;
+};
+
 ///////////////////////////////////////
 // Restructure hosted listing config //
 ///////////////////////////////////////

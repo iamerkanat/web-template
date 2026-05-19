@@ -13,6 +13,7 @@ import {
   displayPrice,
   requirePayoutDetails,
   requireListingImage,
+  requireListingFiles,
 } from '../../../util/configHelpers';
 import {
   LISTING_PAGE_PARAM_TYPE_DRAFT,
@@ -58,6 +59,7 @@ import EditListingWizardTab, {
   AVAILABILITY,
   PHOTOS,
   STYLE,
+  FILES,
 } from './EditListingWizardTab';
 import css from './EditListingWizard.module.css';
 
@@ -91,6 +93,8 @@ const tabsForListingType = (processName, listingTypeConfig) => {
       : [];
   const styleOrPhotosTab = requireListingImage(listingTypeConfig) ? [PHOTOS] : [STYLE];
 
+  const filesTab = requireListingFiles(listingTypeConfig);
+
   // You can reorder these panels.
   // Note 1: You need to change save button translations for new listing flow
   // Note 2: Ensure that draft listing is created after the first panel
@@ -102,6 +106,7 @@ const tabsForListingType = (processName, listingTypeConfig) => {
     ['default-purchase']: [DETAILS, PRICING_AND_STOCK, ...deliveryMaybe, ...styleOrPhotosTab],
     ['default-negotiation']: [DETAILS, ...locationMaybe, ...pricingMaybe, ...styleOrPhotosTab],
     ['default-inquiry']: [DETAILS, ...locationMaybe, ...pricingMaybe, ...styleOrPhotosTab],
+    ['default-download']: [DETAILS, ...locationMaybe, ...pricingMaybe, FILES, ...styleOrPhotosTab],
   };
 
   return tabs[processName] || tabs['default-inquiry'];
@@ -148,6 +153,9 @@ const tabLabelAndSubmit = (intl, tab, isNewListingFlow, isPriceDisabled, process
   } else if (tab === STYLE) {
     labelKey = 'EditListingWizard.tabLabelStyle';
     submitButtonKey = `EditListingWizard.${processNameString}${newOrEdit}.saveStyle`;
+  } else if (tab === FILES) {
+    labelKey = 'EditListingWizard.tabLabelFiles';
+    submitButtonKey = `EditListingWizard.${processNameString}${newOrEdit}.saveFiles`;
   }
 
   return {
@@ -246,6 +254,10 @@ const tabCompleted = (tab, listing, config) => {
 
   const deliveryOptionPicked = publicData && (shippingEnabled || pickupEnabled);
 
+  // TODO: Implement actual conditions
+  const filesRequired = true;
+  const hasValidFiles = true;
+
   switch (tab) {
     case DETAILS:
       return !!(
@@ -270,6 +282,8 @@ const tabCompleted = (tab, listing, config) => {
       return images && images.length > 0;
     case STYLE:
       return !!cardStyle;
+    case FILES:
+      return filesRequired && hasValidFiles;
     default:
       return false;
   }
@@ -380,7 +394,7 @@ const getListingTypeConfig = (listing, selectedListingType, config) => {
  * @param {string} props.params.id - The id of the listing
  * @param {string} props.params.slug - The slug of the listing
  * @param {'new'|'draft'|'edit'} props.params.type - The type of the listing
- * @param {DETAILS | PRICING | PRICING_AND_STOCK | DELIVERY | LOCATION | AVAILABILITY | PHOTOS} props.params.tab - The name of the tab
+ * @param {DETAILS | PRICING | PRICING_AND_STOCK | DELIVERY | LOCATION | AVAILABILITY | PHOTOS | FILES} props.params.tab - The name of the tab
  * @param {propTypes.ownListing} props.listing - The listing object
  * @param {propTypes.error} [props.errors.createListingDraftError] - The error object for createListingDraft
  * @param {propTypes.error} [props.errors.publishListingError] - The error object for publishListing
