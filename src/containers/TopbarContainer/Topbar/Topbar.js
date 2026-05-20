@@ -346,6 +346,13 @@ const TopbarComponent = props => {
         currentPage={resolvedCurrentPage}
       />
       <nav className={classNames(mobileRootClassName || css.container, mobileClassName)}>
+        <LinkedLogo
+          id="logo-topbar-mobile"
+          layout={'mobile'}
+          alt={intl.formatMessage({ id: 'Topbar.logoIcon' })}
+          linkToExternalSite={config?.topbar?.logoLink}
+        />
+
         <Button
           id={MOBILE_MENU_BUTTON_ID}
           rootClassName={css.menu}
@@ -358,12 +365,6 @@ const TopbarComponent = props => {
           />
           {notificationDot}
         </Button>
-        <LinkedLogo
-          id="logo-topbar-mobile"
-          layout={'mobile'}
-          alt={intl.formatMessage({ id: 'Topbar.logoIcon' })}
-          linkToExternalSite={config?.topbar?.logoLink}
-        />
         {mobileSearchButtonMaybe}
       </nav>
       <div className={css.desktop}>
