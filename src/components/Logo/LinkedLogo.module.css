@@ -1,21 +1,19 @@
 @import '../../styles/customMediaQueries.css';
 
 .root {
-  display: block;
+  width: 100%;
+  height: var(--topbarHeight);
 
-  flex-shrink: 0;
-  padding: 0;
-  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 
-  &:hover {
-    text-decoration: none;
-  }
+  padding: 0 24px;
 
-  @media (--viewportMedium) {
-    padding: 0 24px;
-  }
+  background-color: var(--colorWhite);
+  box-shadow: var(--boxShadow);
+}
 
-  @media (--viewportLarge) {
-    padding: 0 36px;
-  }
+.LinkedLogo_root {
+  margin-right: auto;
 }
